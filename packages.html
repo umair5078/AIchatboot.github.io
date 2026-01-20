@@ -31,7 +31,6 @@ button.selector:hover{background:#0ea5e9;color:white}
 
 <div class="selectors">
   <button class="selector" onclick="selectCategory('Daily')">Daily</button>
-  <button class="selector" onclick="selectCategory('3Days')">3 Days</button>
   <button class="selector" onclick="selectCategory('Weekly')">Weekly</button>
   <button class="selector" onclick="selectCategory('Monthly')">Monthly</button>
 </div>
@@ -43,7 +42,6 @@ button.selector:hover{background:#0ea5e9;color:white}
   <button class="selector" onclick="selectNetwork('Ufone')">Ufone</button>
   <button class="selector" onclick="selectNetwork('Onic')">Onic</button>
   <button class="selector" onclick="selectNetwork('Rox')">Rox</button>
-  <button class="selector" onclick="selectNetwork('PTCL')">PTCL</button>
 </div>
 
 <div class="networks" id="packages"></div>
@@ -56,32 +54,118 @@ button.selector:hover{background:#0ea5e9;color:white}
 let selectedCategory = null;
 let selectedNetwork = null;
 
-// Networks & categories
-const networksList = ["Jazz","Zong","Telenor","Ufone","Onic","Rox","PTCL"];
-const categoriesList = ["Daily","3Days","Weekly","Monthly"];
-
-// Generate 50 packages per category with price
-function generatePackages(network, category){
-  const packages = [];
-  for(let i=1;i<=50;i++){
-    const name = `${i}GB ${category} Pack`;
-    let codeBase = {Jazz:100,Zong:200,Telenor:300,Ufone:400,Onic:500,Rox:600,PTCL:700}[network]||900;
-    const code = `*${codeBase}*${i}#`;
-    const price = (i*5).toFixed(0); // Rs price example: 1GB=5, 2GB=10, etc.
-    packages.push({name,code,price});
+// Main package data
+const data = {
+  "Zong": {
+    "Daily":[
+      {name:"Zong Daily 50", price:"50", code:"*646#"},
+      {name:"Zong Daily 75", price:"75", code:"*646#"},
+      {name:"Zong Daily 100", price:"100", code:"*646#"},
+      {name:"Zong Daily 150", price:"150", code:"*646#"}
+    ],
+    "Weekly":[
+      {name:"Zong Weekly 100", price:"100", code:"*646#"},
+      {name:"Zong Weekly 200", price:"200", code:"*646#"},
+      {name:"Zong Weekly 300", price:"300", code:"*646#"},
+      {name:"Zong Weekly 400", price:"400", code:"*646#"}
+    ],
+    "Monthly":[
+      {name:"Zong Monthly 300", price:"300", code:"*646#"},
+      {name:"Zong Monthly 500", price:"500", code:"*646#"},
+      {name:"Zong Monthly 800", price:"800", code:"*646#"},
+      {name:"Zong Monthly 1200", price:"1200", code:"*646#"}
+    ]
+  },
+  "Jazz": {
+    "Daily":[
+      {name:"Jazz Daily 20", price:"20", code:"*555#"},
+      {name:"Jazz Daily 35", price:"35", code:"*555#"},
+      {name:"Jazz Daily 50", price:"50", code:"*555#"},
+      {name:"Jazz Daily 100", price:"100", code:"*555#"}
+    ],
+    "Weekly":[
+      {name:"Jazz Weekly 100", price:"100", code:"*555#"},
+      {name:"Jazz Weekly 200", price:"200", code:"*555#"},
+      {name:"Jazz Weekly 300", price:"300", code:"*555#"},
+      {name:"Jazz Weekly 400", price:"400", code:"*555#"}
+    ],
+    "Monthly":[
+      {name:"Jazz Monthly 300", price:"300", code:"*555#"},
+      {name:"Jazz Monthly 500", price:"500", code:"*555#"},
+      {name:"Jazz Monthly 800", price:"800", code:"*555#"},
+      {name:"Jazz Monthly 1200", price:"1200", code:"*555#"}
+    ]
+  },
+  "Telenor": {
+    "Daily":[
+      {name:"Telenor Daily 20", price:"20", code:"*345#"},
+      {name:"Telenor Daily 30", price:"30", code:"*345#"},
+      {name:"Telenor Daily 50", price:"50", code:"*345#"},
+      {name:"Telenor Daily 100", price:"100", code:"*345#"}
+    ],
+    "Weekly":[
+      {name:"Telenor Weekly 75", price:"75", code:"*345#"},
+      {name:"Telenor Weekly 150", price:"150", code:"*345#"},
+      {name:"Telenor Weekly 200", price:"200", code:"*345#"},
+      {name:"Telenor Weekly 300", price:"300", code:"*345#"}
+    ],
+    "Monthly":[
+      {name:"Telenor Monthly 300", price:"300", code:"*345#"},
+      {name:"Telenor Monthly 500", price:"500", code:"*345#"},
+      {name:"Telenor Monthly 800", price:"800", code:"*345#"},
+      {name:"Telenor Monthly 1200", price:"1200", code:"*345#"}
+    ]
+  },
+  "Ufone": {
+    "Daily":[
+      {name:"Ufone Daily 20", price:"20", code:"*343#"},
+      {name:"Ufone Daily 35", price:"35", code:"*343#"},
+      {name:"Ufone Daily 50", price:"50", code:"*343#"},
+      {name:"Ufone Daily 100", price:"100", code:"*343#"}
+    ],
+    "Weekly":[
+      {name:"Ufone Weekly 100", price:"100", code:"*343#"},
+      {name:"Ufone Weekly 200", price:"200", code:"*343#"},
+      {name:"Ufone Weekly 300", price:"300", code:"*343#"}
+    ],
+    "Monthly":[
+      {name:"Ufone Monthly 300", price:"300", code:"*343#"},
+      {name:"Ufone Monthly 500", price:"500", code:"*343#"},
+      {name:"Ufone Monthly 800", price:"800", code:"*343#"},
+      {name:"Ufone Monthly 1200", price:"1200", code:"*343#"}
+    ]
+  },
+  "Onic": {
+    "Daily":[
+      {name:"ROX Daily 25", price:"25", code:"*121#"},
+      {name:"ROX Daily 50", price:"50", code:"*121#"}
+    ],
+    "Weekly":[
+      {name:"ROX Weekly 100", price:"100", code:"*121#"},
+      {name:"ROX Weekly 200", price:"200", code:"*121#"}
+    ],
+    "Monthly":[
+      {name:"ROX Monthly 300", price:"300", code:"*121#"},
+      {name:"ROX Monthly 500", price:"500", code:"*121#"}
+    ]
+  },
+  "Rox": {
+    "Daily":[
+      {name:"ROX Daily 25", price:"25", code:"*121#"},
+      {name:"ROX Daily 50", price:"50", code:"*121#"}
+    ],
+    "Weekly":[
+      {name:"ROX Weekly 100", price:"100", code:"*121#"},
+      {name:"ROX Weekly 200", price:"200", code:"*121#"}
+    ],
+    "Monthly":[
+      {name:"ROX Monthly 300", price:"300", code:"*121#"},
+      {name:"ROX Monthly 500", price:"500", code:"*121#"}
+    ]
   }
-  return packages;
-}
+};
 
-// Build full data
-const data = {};
-networksList.forEach(net=>{
-  data[net]={};
-  categoriesList.forEach(cat=>{
-    data[net][cat]=generatePackages(net,cat);
-  });
-});
-
+// Functions
 function selectCategory(cat){ selectedCategory=cat; renderPackages(); }
 function selectNetwork(net){ selectedNetwork=net; renderPackages(); }
 
@@ -89,12 +173,14 @@ function renderPackages(){
   const container=document.getElementById("packages");
   container.innerHTML="";
   if(!selectedCategory || !selectedNetwork) return;
-
-  const packages = data[selectedNetwork][selectedCategory];
+  const packages = data[selectedNetwork][selectedCategory]||[];
   packages.forEach(p=>{
-    const div = document.createElement("div");
+    const div=document.createElement("div");
     div.className="card";
-    div.innerHTML=`<h3>${p.name}</h3><p>Network: ${selectedNetwork}</p><p>Category: ${selectedCategory}</p><p>Price: Rs ${p.price}</p>`;
+    div.innerHTML=`<h3>${p.name}</h3>
+                   <p>Network: ${selectedNetwork}</p>
+                   <p>Category: ${selectedCategory}</p>
+                   <p>Price: Rs ${p.price}</p>`;
     div.onclick = ()=>document.getElementById("codeBox").innerText=`USSD Code: ${p.code} | Price: Rs ${p.price}`;
     container.appendChild(div);
   });
