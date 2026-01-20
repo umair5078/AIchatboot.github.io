@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aibott - Network Packages</title>
+<title>Aibott - Network Packages with Price</title>
 <style>
 body{margin:0;font-family:Arial;background:#121212;color:white}
 header{background:#1a73e8;text-align:center;padding:40px 20px;}
@@ -23,8 +23,8 @@ button.selector:hover{background:#0ea5e9;color:white}
 <body>
 
 <header>
-<h1>Network Packages</h1>
-<p>Select network & category to view USSD codes</p>
+<h1>Network Packages with Price</h1>
+<p>Select network & category to view USSD codes & price</p>
 </header>
 
 <div class="container">
@@ -48,7 +48,7 @@ button.selector:hover{background:#0ea5e9;color:white}
 
 <div class="networks" id="packages"></div>
 
-<div id="codeBox">Click a package to see USSD code here</div>
+<div id="codeBox">Click a package to see USSD code & price here</div>
 
 </div>
 
@@ -60,22 +60,20 @@ let selectedNetwork = null;
 const networksList = ["Jazz","Zong","Telenor","Ufone","Onic","Rox","PTCL"];
 const categoriesList = ["Daily","3Days","Weekly","Monthly"];
 
-// Generate at least 50 packages per category
+// Generate 50 packages per category with price
 function generatePackages(network, category){
   const packages = [];
   for(let i=1;i<=50;i++){
     const name = `${i}GB ${category} Pack`;
-    // Unique USSD per network & i
-    let codeBase = {
-      Jazz:100, Zong:200, Telenor:300, Ufone:400, Onic:500, Rox:600, PTCL:700
-    }[network] || 900;
+    let codeBase = {Jazz:100,Zong:200,Telenor:300,Ufone:400,Onic:500,Rox:600,PTCL:700}[network]||900;
     const code = `*${codeBase}*${i}#`;
-    packages.push({name,code});
+    const price = (i*5).toFixed(0); // Rs price example: 1GB=5, 2GB=10, etc.
+    packages.push({name,code,price});
   }
   return packages;
 }
 
-// Build full data dynamically
+// Build full data
 const data = {};
 networksList.forEach(net=>{
   data[net]={};
@@ -96,8 +94,8 @@ function renderPackages(){
   packages.forEach(p=>{
     const div = document.createElement("div");
     div.className="card";
-    div.innerHTML=`<h3>${p.name}</h3><p>Network: ${selectedNetwork}</p><p>Category: ${selectedCategory}</p>`;
-    div.onclick = ()=>document.getElementById("codeBox").innerText=`USSD Code: ${p.code}`;
+    div.innerHTML=`<h3>${p.name}</h3><p>Network: ${selectedNetwork}</p><p>Category: ${selectedCategory}</p><p>Price: Rs ${p.price}</p>`;
+    div.onclick = ()=>document.getElementById("codeBox").innerText=`USSD Code: ${p.code} | Price: Rs ${p.price}`;
     container.appendChild(div);
   });
 }
