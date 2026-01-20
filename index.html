@@ -3,35 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aibott</title>
+<title>Aibott 30 Mini Games</title>
 <style>
-  body { margin:0; font-family: 'Arial', sans-serif; background:#f0f4f8; color:#333; }
-  header { background:#1a73e8; color:white; text-align:center; padding:50px 20px; }
-  header h1 { margin:0; font-size:3em; }
-  header p { margin-top:10px; font-size:1.2em; }
-  .buttons { display:flex; justify-content:center; flex-wrap:wrap; gap:20px; margin:50px auto; max-width:900px; }
-  .btn { background:#1a73e8; color:white; padding:20px 40px; text-decoration:none; font-size:1.2em; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:0.3s; text-align:center; flex:1 1 200px; }
-  .btn:hover { background:#155ab6; transform:translateY(-3px); }
-  footer { text-align:center; padding:30px 20px; background:#eee; margin-top:50px; color:#555; }
+body{margin:0;font-family:Arial;background:#000;color:#fff}
+header{background:#111;padding:25px;text-align:center;color:#38bdf8}
+.container{max-width:1200px;margin:auto;padding:20px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
+.card{background:#111827;border:1px solid #334155;padding:15px;border-radius:10px;text-align:center;cursor:pointer;transition:0.2s}
+.card:hover{border-color:#38bdf8}
+button.playBtn{margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#38bdf8;color:#111;font-weight:bold;cursor:pointer}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);justify-content:center;align-items:center;z-index:1000}
+.modalContent{background:#1a1a1a;padding:20px;border-radius:10px;max-width:600px;width:90%;text-align:center}
+.closeBtn{margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer}
+canvas{background:#111;border:1px solid #334155;margin-top:10px}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Aibott</h1>
-  <p>Your one-stop hub for Network Packages, AI Chatbot, and Games!</p>
+<h1>Aibott – 30 Mini Games</h1>
+<p>Click PLAY to start each game</p>
 </header>
 
-<div class="buttons">
-  <a href="network.html" class="btn">View Packages</a>
-  <a href="chatbot.html" class="btn">AI Chatbot</a>
-  <a href="games.html" class="btn">Games</a>
+<div class="container">
+<div class="games" id="gamesContainer"></div>
 </div>
 
-<footer>
-  &copy; 2026 Aibott. All rights reserved.
-</footer>
+<!-- Modal for game -->
+<div class="modal" id="gameModal">
+<div class="modalContent">
+<h2 id="gameTitle">Game</h2>
+<div id="gameArea"></div>
+<button class="closeBtn" onclick="closeGame()">Close Game</button>
+</div>
+</div>
 
+<script>
+const gamesContainer=document.getElementById('gamesContainer');
+const gameModal=document.getElementById('gameModal');
+const gameArea=document.getElementById('gameArea');
+const gameTitle=document.getElementById('gameTitle');
+
+// ======= Create 30 demo mini games =======
+for(let i=1;i<=30;i++){
+  const card=document.createElement('div');
+  card.className='card';
+  card.innerHTML=`<b>Game ${i}</b><br><button class='playBtn'>PLAY</button>`;
+  card.querySelector('button').onclick=()=>startGame(i);
+  gamesContainer.appendChild(card);
+}
+
+function startGame(num){
+  gameTitle.innerText=`Game ${num}`;
+  gameArea.innerHTML='';
+  gameModal.style.display='flex';
+  // For demo: switch by number to a mini-game
+  if(num%5===1) simpleClicker();
+  else if(num%5===2) bouncingBall();
+  else if(num%5===3) snakeGame();
+  else if(num%5===4) dodgerGame();
+  else simpleRunner();
+}
+
+function closeGame(){
+  gameModal.style.display='none';
+  gameArea.innerHTML='';
+}
+
+// ======= Mini Games =======
+function simpleClicker(){
+  let count=0;
+  const btn=document.createElement('button');
+  btn.innerText='Click Me!';
+  const p=document.createElement('p');
+  p.innerText=`Score: ${count}`;
+  btn.onclick=()=>{count++;p.innerText=`Score: ${count}`;};
+  gameArea.appendChild(btn);
+  gameArea.appendChild(p);
+}
+
+function bouncingBall(){
+  const canvas=document.createElement('canvas');
+  canvas.width=400; canvas.height=300;
+  gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let x=200,y=150,dx=3,dy=3,r=20;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='#38bdf8';ctx.fill();
+    x+=dx;y+=dy;
+    if(x+r>canvas.width||x-r<0) dx*=-1;
+    if(y+r>canvas.height||y-r<0) dy*=-1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function snakeGame(){
+  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;
+  gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  const box=20;let snake=[{x:10*box,y:10*box}],dir='',food={x:Math.floor(Math.random()*20)*box,y:Math.floor(Math.random()*15)*box},score=0;
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowUp')dir='UP';if(e.key==='ArrowDown')dir='DOWN';if(e.key==='ArrowLeft')dir='LEFT';if(e.key==='ArrowRight')dir='RIGHT';});
+  function draw(){
+    ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#38bdf8';snake.forEach(s=>ctx.fillRect(s.x,s.y,box,box));
+    ctx.fillStyle='red';ctx.fillRect(food.x,food.y,box,box);
+    let head={x:snake[0].x,y:snake[0].y};
+    if(dir==='UP') head.y-=box;if(dir==='DOWN') head.y+=box;if(dir==='LEFT') head.x-=box;if(dir==='RIGHT') head.x+=box;
+    if(head.x===food.x&&head.y===food.y){score++;food={x:Math.floor(Math.random()*20)*box,y:Math.floor(Math.random()*15)*box};}else{snake.pop();}
+    snake.unshift(head);
+    for(let i=1;i<snake.length;i++){if(head.x===snake[i].x && head.y===snake[i].y){alert('Game Over');closeGame();return;}}
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function dodgerGame(){
+  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;
+  gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let playerX=180,playerY=260,obsX=Math.random()*380,obsY=0,score=0;
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')playerX-=10;if(e.key==='ArrowRight')playerX+=10;});
+  function draw(){
+    ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#38bdf8';ctx.fillRect(playerX,playerY,40,20);
+    ctx.fillStyle='red';ctx.fillRect(obsX,obsY,20,20);
+    obsY+=4;if(obsY>canvas.height){obsY=0;obsX=Math.random()*380;score++;}
+    if(obsX<playerX+40 && obsX+20>playerX && obsY<playerY+20 && obsY+20>playerY){alert('Game Over');closeGame();return;}
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function simpleRunner(){
+  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=150;
+  gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let x=10,y=120,obsX=400; let jump=false;
+  document.addEventListener('keydown',e=>{if(e.key===' ')jump=true;});
+  function draw(){
+    ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
+    if(jump){y-=5;if(y<50)jump=false;}else{if(y<120)y+=5;}
+    ctx.fillStyle='#38bdf8';ctx.fillRect(x,y,30,30);
+    ctx.fillStyle='red';ctx.fillRect(obsX,120,30,30);
+    obsX-=5;if(obsX<0)obsX=400;
+    if(obsX<x+30 && obsX+30>x && y+30>120){alert('Game Over');closeGame();return;}
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
 </body>
 </html>
-
