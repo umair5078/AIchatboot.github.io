@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Games Hub</title>
+<style>
+body{margin:0;background:#0f172a;color:white;font-family:Arial}
+h1{text-align:center;padding:20px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;padding:20px}
+.card{background:#1e293b;border-radius:12px;padding:15px;border:1px solid #334155}
+.card h3{margin:0 0 8px}
+.card p{margin:5px 0;font-size:14px}
+button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer}
+.play{background:#22c55e}
+.quit{background:#ef4444;color:white}
+#gameArea{display:none;padding:20px;text-align:center}
+#score{font-size:18px;margin:10px}
+#tapBtn{padding:15px 25px;font-size:18px;background:#38bdf8;border:none;border-radius:10px}
+</style>
+</head>
+<body>
+
+<h1>🎮 Browser Games Hub (30 Games)</h1>
+
+<div class="games" id="gamesList"></div>
+
+<div id="gameArea">
+  <h2 id="gameTitle"></h2>
+  <div id="score">Score: 0</div>
+  <button id="tapBtn">TAP / CLICK</button><br><br>
+  <button class="quit" onclick="quitGame()">Quit Game</button>
+</div>
+
+<script>
+const games = [
+"Tap Master","Speed Click","Fast Touch","Power Tap","Quick Finger",
+"Click Hero","Tap King","Tap Storm","Hyper Click","Touch Pro",
+"Finger Rush","Rapid Tap","Tap Zone","Click Arena","Tap Xtreme",
+"Speed Touch","Tap Ninja","Click Boss","Tap Clash","Fast Clicker",
+"Tap Legend","Touch Mania","Click Zone","Tap Warrior","Speed King",
+"Tap Champ","Click Runner","Tap Master Pro","Hyper Tap","Ultra Click"
+];
+
+const list = document.getElementById("gamesList");
+const gameArea = document.getElementById("gameArea");
+const title = document.getElementById("gameTitle");
+const scoreBox = document.getElementById("score");
+let score = 0;
+
+games.forEach((g,i)=>{
+  const div = document.createElement("div");
+  div.className="card";
+  div.innerHTML = `
+    <h3>${i+1}. ${g}</h3>
+    <p>Score: 0</p>
+    <button class="play" onclick="playGame('${g}')">Play</button>
+  `;
+  list.appendChild(div);
+});
+
+function playGame(name){
+  score = 0;
+  title.innerText = name;
+  scoreBox.innerText = "Score: 0";
+  gameArea.style.display="block";
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+document.getElementById("tapBtn").onclick = ()=>{
+  score++;
+  scoreBox.innerText = "Score: " + score;
+};
+
+function quitGame(){
+  gameArea.style.display="none";
+  alert("Game Over! Your Score: " + score);
+}
+</script>
+
+</body>
+</html>
 
