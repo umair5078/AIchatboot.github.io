@@ -8,7 +8,7 @@
 body{margin:0;font-family:Arial;background:#121212;color:white}
 header{background:#1a73e8;text-align:center;padding:40px 20px;}
 header h1{margin:0;font-size:2.5em}
-.container{max-width:900px;margin:30px auto;padding:20px}
+.container{max-width:1000px;margin:30px auto;padding:20px}
 .selectors{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
 button.selector{padding:8px 16px;background:#38bdf8;border:none;border-radius:8px;cursor:pointer;color:#111827}
 button.selector:hover{background:#0ea5e9;color:white}
@@ -24,7 +24,7 @@ button.selector:hover{background:#0ea5e9;color:white}
 
 <header>
 <h1>Network Packages</h1>
-<p>Select network & category to view codes</p>
+<p>Select network & category to view USSD codes</p>
 </header>
 
 <div class="container">
@@ -56,50 +56,28 @@ button.selector:hover{background:#0ea5e9;color:white}
 let selectedCategory = null;
 let selectedNetwork = null;
 
-const data = {
-  Jazz: {
-    Daily:[{name:"1GB",code:"*111*1#"}, {name:"2GB",code:"*111*2#"}],
-    "3Days":[{name:"3GB",code:"*111*3#"}],
-    Weekly:[{name:"5GB",code:"*111*5#"}],
-    Monthly:[{name:"10GB",code:"*111*10#"}]
-  },
-  Zong: {
-    Daily:[{name:"1GB",code:"*100*1#"}, {name:"2GB",code:"*100*2#"}],
-    "3Days":[{name:"3GB",code:"*100*3#"}],
-    Weekly:[{name:"5GB",code:"*100*5#"}],
-    Monthly:[{name:"10GB",code:"*100*10#"}]
-  },
-  Telenor: {
-    Daily:[{name:"1GB",code:"*345*1#"}],
-    "3Days":[{name:"3GB",code:"*345*3#"}],
-    Weekly:[{name:"5GB",code:"*345*5#"}],
-    Monthly:[{name:"10GB",code:"*345*10#"}]
-  },
-  Ufone: {
-    Daily:[{name:"1GB",code:"*789*1#"}],
-    "3Days":[{name:"3GB",code:"*789*3#"}],
-    Weekly:[{name:"5GB",code:"*789*5#"}],
-    Monthly:[{name:"10GB",code:"*789*10#"}]
-  },
-  Onic: {
-    Daily:[{name:"1GB",code:"*500*1#"}],
-    "3Days":[{name:"3GB",code:"*500*3#"}],
-    Weekly:[{name:"5GB",code:"*500*5#"}],
-    Monthly:[{name:"10GB",code:"*500*10#"}]
-  },
-  Rox: {
-    Daily:[{name:"1GB",code:"*600*1#"}],
-    "3Days":[{name:"3GB",code:"*600*3#"}],
-    Weekly:[{name:"5GB",code:"*600*5#"}],
-    Monthly:[{name:"10GB",code:"*600*10#"}]
-  },
-  PTCL: {
-    Daily:[{name:"100MB",code:"*123*1#"}],
-    "3Days":[{name:"500MB",code:"*123*3#"}],
-    Weekly:[{name:"1GB",code:"*123*5#"}],
-    Monthly:[{name:"5GB",code:"*123*10#"}]
+// Function to generate 20+ dummy packages
+function generatePackages(network, category){
+  const packages = [];
+  for(let i=1;i<=20;i++){
+    const name = `${i}GB ${category} Pack`;
+    const code = `*${Math.floor(100+i)}*${i}#`; // sample USSD code
+    packages.push({name,code});
   }
-};
+  return packages;
+}
+
+const networksList = ["Jazz","Zong","Telenor","Ufone","Onic","Rox","PTCL"];
+const categoriesList = ["Daily","3Days","Weekly","Monthly"];
+
+// Build full data object dynamically
+const data = {};
+networksList.forEach(net=>{
+  data[net]={};
+  categoriesList.forEach(cat=>{
+    data[net][cat]=generatePackages(net,cat);
+  });
+});
 
 function selectCategory(cat){ selectedCategory=cat; renderPackages(); }
 function selectNetwork(net){ selectedNetwork=net; renderPackages(); }
@@ -122,4 +100,3 @@ function renderPackages(){
 
 </body>
 </html>
-
