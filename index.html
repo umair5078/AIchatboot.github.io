@@ -3,38 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aibott 30 Mini Games</title>
+<title>Aibott 30 Games Enhanced</title>
 <style>
 body{margin:0;font-family:Arial;background:#000;color:#fff}
 header{background:#111;padding:25px;text-align:center;color:#38bdf8}
 .container{max-width:1200px;margin:auto;padding:20px}
-.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
-.card{background:#111827;border:1px solid #334155;padding:15px;border-radius:10px;text-align:center;cursor:pointer;transition:0.2s}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px}
+.card{background:#111827;border:1px solid #334155;padding:20px;border-radius:12px;text-align:center;cursor:pointer;transition:0.2s}
 .card:hover{border-color:#38bdf8}
-button.playBtn{margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#38bdf8;color:#111;font-weight:bold;cursor:pointer}
+button.playBtn{margin-top:12px;padding:10px 16px;border:none;border-radius:8px;background:#38bdf8;color:#111;font-weight:bold;cursor:pointer;font-size:1em}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);justify-content:center;align-items:center;z-index:1000}
-.modalContent{background:#1a1a1a;padding:20px;border-radius:10px;max-width:600px;width:90%;text-align:center}
-.closeBtn{margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer}
+.modalContent{background:#1a1a1a;padding:20px;border-radius:12px;max-width:700px;width:95%;text-align:center}
+.closeBtn{margin-top:10px;padding:10px 16px;border:none;border-radius:8px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer;font-size:1em}
 canvas{background:#111;border:1px solid #334155;margin-top:10px}
+.scoreBoard{margin-top:10px;font-size:1.1em;color:#38bdf8}
 </style>
 </head>
 <body>
 
 <header>
 <h1>Aibott – 30 Mini Games</h1>
-<p>Click PLAY to start each game</p>
+<p>Click PLAY to start each game. Score and Quit available.</p>
 </header>
 
 <div class="container">
 <div class="games" id="gamesContainer"></div>
 </div>
 
-<!-- Modal for game -->
 <div class="modal" id="gameModal">
 <div class="modalContent">
 <h2 id="gameTitle">Game</h2>
 <div id="gameArea"></div>
-<button class="closeBtn" onclick="closeGame()">Close Game</button>
+<div class="scoreBoard" id="scoreBoard">Score: 0</div>
+<button class="closeBtn" onclick="closeGame()">Quit Game</button>
 </div>
 </div>
 
@@ -43,67 +44,79 @@ const gamesContainer=document.getElementById('gamesContainer');
 const gameModal=document.getElementById('gameModal');
 const gameArea=document.getElementById('gameArea');
 const gameTitle=document.getElementById('gameTitle');
+const scoreBoard=document.getElementById('scoreBoard');
 
-// ======= Create 30 demo mini games =======
-for(let i=1;i<=30;i++){
+// ======== Game names ========
+const gameNames=[
+  'Clicker Mania','Bouncing Ball','Snake Challenge','Dodger','Runner Dash',
+  'Ball Catch','Cube Jump','Speed Tap','Color Matcher','Maze Escape',
+  'Rocket Flight','Fruit Slice','Ball Bounce','Memory Game','Number Tap',
+  'Car Race','Jumper','Brick Breaker','Balloon Pop','Line Draw',
+  'Fast Tap','Ball Race','Catch Game','Tile Jump','Obstacle Dash',
+  'Ping Pong','Falling Blocks','Space Shooter','Coin Collector','Rocket Jump'
+];
+
+// ======= Generate game cards ======
+gameNames.forEach((name,i)=>{
   const card=document.createElement('div');
   card.className='card';
-  card.innerHTML=`<b>Game ${i}</b><br><button class='playBtn'>PLAY</button>`;
-  card.querySelector('button').onclick=()=>startGame(i);
+  card.innerHTML=`<b>${name}</b><br><button class='playBtn'>PLAY</button>`;
+  card.querySelector('button').onclick=()=>startGame(i+1,name);
   gamesContainer.appendChild(card);
-}
+});
 
-function startGame(num){
-  gameTitle.innerText=`Game ${num}`;
+// ======== Modal Logic ========
+let gameLoop=null;
+function startGame(num,name){
+  gameTitle.innerText=name;
   gameArea.innerHTML='';
+  scoreBoard.innerText='Score: 0';
   gameModal.style.display='flex';
-  // For demo: switch by number to a mini-game
-  if(num%5===1) simpleClicker();
-  else if(num%5===2) bouncingBall();
-  else if(num%5===3) snakeGame();
-  else if(num%5===4) dodgerGame();
-  else simpleRunner();
+  // Select game by num (rotate demo games)
+  switch(num%5){
+    case 1: simpleClicker(); break;
+    case 2: bouncingBall(); break;
+    case 3: snakeGame(); break;
+    case 4: dodgerGame(); break;
+    case 0: simpleRunner(); break;
+  }
 }
-
 function closeGame(){
   gameModal.style.display='none';
   gameArea.innerHTML='';
+  scoreBoard.innerText='Score: 0';
+  if(gameLoop) cancelAnimationFrame(gameLoop);
 }
 
-// ======= Mini Games =======
+// ===== Mini Games =====
 function simpleClicker(){
   let count=0;
   const btn=document.createElement('button');
   btn.innerText='Click Me!';
-  const p=document.createElement('p');
-  p.innerText=`Score: ${count}`;
-  btn.onclick=()=>{count++;p.innerText=`Score: ${count}`;};
-  gameArea.appendChild(btn);
-  gameArea.appendChild(p);
+  btn.style.padding='12px 18px'; btn.style.fontSize='1em';
+  const p=document.createElement('p'); p.innerText=`Score: ${count}`;
+  btn.onclick=()=>{count++;p.innerText=`Score: ${count}`;scoreBoard.innerText=`Score: ${count}`;};
+  gameArea.appendChild(btn); gameArea.appendChild(p);
 }
 
 function bouncingBall(){
-  const canvas=document.createElement('canvas');
-  canvas.width=400; canvas.height=300;
-  gameArea.appendChild(canvas);
+  const canvas=document.createElement('canvas');canvas.width=500;canvas.height=300;gameArea.appendChild(canvas);
   const ctx=canvas.getContext('2d');
-  let x=200,y=150,dx=3,dy=3,r=20;
+  let x=250,y=150,dx=4,dy=4,r=20,score=0;
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='#38bdf8';ctx.fill();
     x+=dx;y+=dy;
-    if(x+r>canvas.width||x-r<0) dx*=-1;
-    if(y+r>canvas.height||y-r<0) dy*=-1;
-    requestAnimationFrame(draw);
+    if(x+r>canvas.width||x-r<0){dx*=-1;score++;scoreBoard.innerText=`Score: ${score}`;}
+    if(y+r>canvas.height||y-r<0){dy*=-1;score++;scoreBoard.innerText=`Score: ${score}`;}
+    gameLoop=requestAnimationFrame(draw);
   }
   draw();
 }
 
 function snakeGame(){
-  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;
-  gameArea.appendChild(canvas);
-  const ctx=canvas.getContext('2d');
-  const box=20;let snake=[{x:10*box,y:10*box}],dir='',food={x:Math.floor(Math.random()*20)*box,y:Math.floor(Math.random()*15)*box},score=0;
+  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');const box=20;let snake=[{x:10*box,y:10*box}],dir='',food={x:Math.floor(Math.random()*20)*box,y:Math.floor(Math.random()*15)*box},score=0;
   document.addEventListener('keydown',e=>{if(e.key==='ArrowUp')dir='UP';if(e.key==='ArrowDown')dir='DOWN';if(e.key==='ArrowLeft')dir='LEFT';if(e.key==='ArrowRight')dir='RIGHT';});
   function draw(){
     ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -114,45 +127,43 @@ function snakeGame(){
     if(head.x===food.x&&head.y===food.y){score++;food={x:Math.floor(Math.random()*20)*box,y:Math.floor(Math.random()*15)*box};}else{snake.pop();}
     snake.unshift(head);
     for(let i=1;i<snake.length;i++){if(head.x===snake[i].x && head.y===snake[i].y){alert('Game Over');closeGame();return;}}
-    requestAnimationFrame(draw);
+    scoreBoard.innerText=`Score: ${score}`;
+    gameLoop=requestAnimationFrame(draw);
   }
   draw();
 }
 
 function dodgerGame(){
-  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;
-  gameArea.appendChild(canvas);
-  const ctx=canvas.getContext('2d');
-  let playerX=180,playerY=260,obsX=Math.random()*380,obsY=0,score=0;
+  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=300;gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');let playerX=180,playerY=260,obsX=Math.random()*380,obsY=0,score=0;
   document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')playerX-=10;if(e.key==='ArrowRight')playerX+=10;});
   function draw(){
     ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle='#38bdf8';ctx.fillRect(playerX,playerY,40,20);
     ctx.fillStyle='red';ctx.fillRect(obsX,obsY,20,20);
-    obsY+=4;if(obsY>canvas.height){obsY=0;obsX=Math.random()*380;score++;}
+    obsY+=4;if(obsY>canvas.height){obsY=0;obsX=Math.random()*380;score++;scoreBoard.innerText=`Score: ${score}`;}
     if(obsX<playerX+40 && obsX+20>playerX && obsY<playerY+20 && obsY+20>playerY){alert('Game Over');closeGame();return;}
-    requestAnimationFrame(draw);
+    gameLoop=requestAnimationFrame(draw);
   }
   draw();
 }
 
 function simpleRunner(){
-  const canvas=document.createElement('canvas');canvas.width=400;canvas.height=150;
-  gameArea.appendChild(canvas);
-  const ctx=canvas.getContext('2d');
-  let x=10,y=120,obsX=400; let jump=false;
+  const canvas=document.createElement('canvas');canvas.width=500;canvas.height=150;gameArea.appendChild(canvas);
+  const ctx=canvas.getContext('2d');let x=10,y=120,obsX=500,jump=false,score=0;
   document.addEventListener('keydown',e=>{if(e.key===' ')jump=true;});
   function draw(){
     ctx.fillStyle='#111';ctx.fillRect(0,0,canvas.width,canvas.height);
     if(jump){y-=5;if(y<50)jump=false;}else{if(y<120)y+=5;}
     ctx.fillStyle='#38bdf8';ctx.fillRect(x,y,30,30);
     ctx.fillStyle='red';ctx.fillRect(obsX,120,30,30);
-    obsX-=5;if(obsX<0)obsX=400;
+    obsX-=5;if(obsX<0){obsX=500;score++;scoreBoard.innerText=`Score: ${score}`;}
     if(obsX<x+30 && obsX+30>x && y+30>120){alert('Game Over');closeGame();return;}
-    requestAnimationFrame(draw);
+    gameLoop=requestAnimationFrame(draw);
   }
   draw();
 }
 </script>
+
 </body>
 </html>
