@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aibott - AI Chatbot (Offline)</title>
+<title>Aibott - AI Chatbot</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#121212; color:white; }
 header { background:#1a73e8; color:white; text-align:center; padding:40px 20px; }
@@ -23,7 +23,7 @@ button:hover { background:#155ab6; }
 
 <header>
   <h1>AI Chatbot</h1>
-  <p>Offline AI Chatbot (no API needed)</p>
+  <p>Type your question and get real-time AI answers!</p>
 </header>
 
 <div class="container">
@@ -34,25 +34,14 @@ button:hover { background:#155ab6; }
 </div>
 
 <script>
-// Offline AI responses
-const aiResponses = [
-  "Hello! How can I help you today?",
-  "I'm here to answer your questions!",
-  "That sounds interesting, tell me more!",
-  "Sorry, I didn't understand that. Can you rephrase?",
-  "Wow! That's cool!",
-  "I'm learning every day to help better!"
-];
+// ✅ Your OpenAI API Key (replace with your own key)
+const OPENAI_API_KEY = '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';
 
-function getRandomResponse() {
-  return aiResponses[Math.floor(Math.random() * aiResponses.length)];
-}
-
-function sendMessage() {
+async function sendMessage() {
   const input = document.getElementById('userInput').value.trim();
   if(!input) return;
-  const chatbox = document.getElementById('chatbox');
 
+  const chatbox = document.getElementById('chatbox');
   chatbox.innerHTML += `<p><b>You:</b> ${input}</p>`;
   document.getElementById('userInput').value = '';
   chatbox.scrollTop = chatbox.scrollHeight;
@@ -62,11 +51,30 @@ function sendMessage() {
   chatbox.appendChild(loading);
   chatbox.scrollTop = chatbox.scrollHeight;
 
-  setTimeout(() => {
-    const response = getRandomResponse();
-    loading.innerHTML = `<b>AI:</b> ${response}`;
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{role:"user", content: input}],
+        temperature: 0.7,
+        max_tokens: 250
+      })
+    });
+
+    const data = await response.json();
+    const aiMessage = data.choices[0].message.content;
+
+    loading.innerHTML = `<b>AI:</b> ${aiMessage}`;
     chatbox.scrollTop = chatbox.scrollHeight;
-  }, 800); // simulate typing
+  } catch(err) {
+    loading.innerHTML = `<b>AI:</b> Sorry, something went wrong.`;
+    console.error(err);
+  }
 }
 
 // Image upload
