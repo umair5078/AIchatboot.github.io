@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aibott - Network Packages</title>
+<style>
+body{margin:0;font-family:Arial;background:#121212;color:white}
+header{background:#1a73e8;text-align:center;padding:40px 20px;}
+header h1{margin:0;font-size:2.5em}
+.container{max-width:900px;margin:30px auto;padding:20px}
+.selectors{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+button.selector{padding:8px 16px;background:#38bdf8;border:none;border-radius:8px;cursor:pointer;color:#111827}
+button.selector:hover{background:#0ea5e9;color:white}
+.networks{display:flex;flex-wrap:wrap;gap:15px}
+.card{background:#1f1f1f;padding:15px;border-radius:10px;flex:1 1 200px;cursor:pointer;transition:0.2s;border:1px solid #334155}
+.card:hover{border-color:#38bdf8}
+.card h3{margin-top:0}
+.card p{margin:5px 0;font-size:0.95em}
+#codeBox{margin-top:20px;padding:15px;background:#1a1a1a;border-radius:10px;border:1px solid #334155;font-family:monospace}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Network Packages</h1>
+<p>Select network & category to view codes</p>
+</header>
+
+<div class="container">
+
+<div class="selectors">
+  <button class="selector" onclick="selectCategory('Daily')">Daily</button>
+  <button class="selector" onclick="selectCategory('3Days')">3 Days</button>
+  <button class="selector" onclick="selectCategory('Weekly')">Weekly</button>
+  <button class="selector" onclick="selectCategory('Monthly')">Monthly</button>
+</div>
+
+<div class="selectors">
+  <button class="selector" onclick="selectNetwork('Jazz')">Jazz</button>
+  <button class="selector" onclick="selectNetwork('Zong')">Zong</button>
+  <button class="selector" onclick="selectNetwork('Telenor')">Telenor</button>
+  <button class="selector" onclick="selectNetwork('Ufone')">Ufone</button>
+  <button class="selector" onclick="selectNetwork('Onic')">Onic</button>
+  <button class="selector" onclick="selectNetwork('Rox')">Rox</button>
+  <button class="selector" onclick="selectNetwork('PTCL')">PTCL</button>
+</div>
+
+<div class="networks" id="packages"></div>
+
+<div id="codeBox">Click a package to see USSD code here</div>
+
+</div>
+
+<script>
+let selectedCategory = null;
+let selectedNetwork = null;
+
+const data = {
+  Jazz: {
+    Daily:[{name:"1GB",code:"*111*1#"}, {name:"2GB",code:"*111*2#"}],
+    "3Days":[{name:"3GB",code:"*111*3#"}],
+    Weekly:[{name:"5GB",code:"*111*5#"}],
+    Monthly:[{name:"10GB",code:"*111*10#"}]
+  },
+  Zong: {
+    Daily:[{name:"1GB",code:"*100*1#"}, {name:"2GB",code:"*100*2#"}],
+    "3Days":[{name:"3GB",code:"*100*3#"}],
+    Weekly:[{name:"5GB",code:"*100*5#"}],
+    Monthly:[{name:"10GB",code:"*100*10#"}]
+  },
+  Telenor: {
+    Daily:[{name:"1GB",code:"*345*1#"}],
+    "3Days":[{name:"3GB",code:"*345*3#"}],
+    Weekly:[{name:"5GB",code:"*345*5#"}],
+    Monthly:[{name:"10GB",code:"*345*10#"}]
+  },
+  Ufone: {
+    Daily:[{name:"1GB",code:"*789*1#"}],
+    "3Days":[{name:"3GB",code:"*789*3#"}],
+    Weekly:[{name:"5GB",code:"*789*5#"}],
+    Monthly:[{name:"10GB",code:"*789*10#"}]
+  },
+  Onic: {
+    Daily:[{name:"1GB",code:"*500*1#"}],
+    "3Days":[{name:"3GB",code:"*500*3#"}],
+    Weekly:[{name:"5GB",code:"*500*5#"}],
+    Monthly:[{name:"10GB",code:"*500*10#"}]
+  },
+  Rox: {
+    Daily:[{name:"1GB",code:"*600*1#"}],
+    "3Days":[{name:"3GB",code:"*600*3#"}],
+    Weekly:[{name:"5GB",code:"*600*5#"}],
+    Monthly:[{name:"10GB",code:"*600*10#"}]
+  },
+  PTCL: {
+    Daily:[{name:"100MB",code:"*123*1#"}],
+    "3Days":[{name:"500MB",code:"*123*3#"}],
+    Weekly:[{name:"1GB",code:"*123*5#"}],
+    Monthly:[{name:"5GB",code:"*123*10#"}]
+  }
+};
+
+function selectCategory(cat){ selectedCategory=cat; renderPackages(); }
+function selectNetwork(net){ selectedNetwork=net; renderPackages(); }
+
+function renderPackages(){
+  const container=document.getElementById("packages");
+  container.innerHTML="";
+  if(!selectedCategory || !selectedNetwork) return;
+
+  const packages = data[selectedNetwork][selectedCategory];
+  packages.forEach(p=>{
+    const div = document.createElement("div");
+    div.className="card";
+    div.innerHTML=`<h3>${p.name}</h3><p>Network: ${selectedNetwork}</p><p>Category: ${selectedCategory}</p>`;
+    div.onclick = ()=>document.getElementById("codeBox").innerText=`USSD Code: ${p.code}`;
+    container.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
 
