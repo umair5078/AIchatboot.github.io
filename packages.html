@@ -56,21 +56,26 @@ button.selector:hover{background:#0ea5e9;color:white}
 let selectedCategory = null;
 let selectedNetwork = null;
 
-// Function to generate 20+ dummy packages
+// Networks & categories
+const networksList = ["Jazz","Zong","Telenor","Ufone","Onic","Rox","PTCL"];
+const categoriesList = ["Daily","3Days","Weekly","Monthly"];
+
+// Generate at least 50 packages per category
 function generatePackages(network, category){
   const packages = [];
-  for(let i=1;i<=20;i++){
+  for(let i=1;i<=50;i++){
     const name = `${i}GB ${category} Pack`;
-    const code = `*${Math.floor(100+i)}*${i}#`; // sample USSD code
+    // Unique USSD per network & i
+    let codeBase = {
+      Jazz:100, Zong:200, Telenor:300, Ufone:400, Onic:500, Rox:600, PTCL:700
+    }[network] || 900;
+    const code = `*${codeBase}*${i}#`;
     packages.push({name,code});
   }
   return packages;
 }
 
-const networksList = ["Jazz","Zong","Telenor","Ufone","Onic","Rox","PTCL"];
-const categoriesList = ["Daily","3Days","Weekly","Monthly"];
-
-// Build full data object dynamically
+// Build full data dynamically
 const data = {};
 networksList.forEach(net=>{
   data[net]={};
