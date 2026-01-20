@@ -15,7 +15,105 @@
   footer { text-align:center; padding:30px 20px; background:#eee; margin-top:50px; color:#555; }
 </style>
 </head>
+  <!-- TERMS & CONDITIONS BUTTON -->
+<div id="termsBtn">Terms & Conditions</div>
+
+<!-- TERMS MODAL -->
+<div id="termsModal">
+  <div class="termsContent">
+    <span class="closeBtn" onclick="closeTerms()">&times;</span>
+    <h2>Terms & Conditions</h2>
+
+    <p>
+      Welcome to our website. By accessing or using this website, you agree
+      to be bound by these Terms and Conditions. If you do not agree with any
+      part of these terms, please do not use our website.
+    </p>
+
+    <p>
+      All information, packages, games, and tools provided on this website
+      are for informational and educational purposes only. We do not claim
+      ownership of any telecom services or third-party content.
+    </p>
+
+    <p>
+      Fake email tools, demo features, and games available on this website
+      are strictly for testing and learning purposes. Misuse of any tool
+      is solely the responsibility of the user.
+    </p>
+
+    <p>
+      We are not responsible for any loss, damage, or issues caused by
+      using this website. Users must use this website at their own risk.
+    </p>
+
+    <p>
+      These terms may be updated at any time without prior notice.
+      Continued use of the website means you accept the updated terms.
+    </p>
+
+    <p><b>Thank you for visiting our website.</b></p>
+  </div>
+</div>
+
+<style>
+#termsBtn{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  background:#0ea5e9;
+  color:#000;
+  padding:10px 16px;
+  border-radius:25px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:bold;
+  z-index:999;
+}
+
+#termsModal{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  z-index:1000;
+}
+
+.termsContent{
+  background:#121212;
+  color:white;
+  max-width:600px;
+  margin:80px auto;
+  padding:25px;
+  border-radius:12px;
+  border:1px solid #38bdf8;
+  line-height:1.6;
+  position:relative;
+}
+
+.closeBtn{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:28px;
+  cursor:pointer;
+  color:#38bdf8;
+}
+</style>
+
+<script>
+document.getElementById("termsBtn").onclick = function(){
+  document.getElementById("termsModal").style.display="block";
+}
+function closeTerms(){
+  document.getElementById("termsModal").style.display="none";
+}
+</script>
+
 <body>
+  
 
 <header>
   <h1>Aibott</h1>
